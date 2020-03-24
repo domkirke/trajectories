@@ -1,18 +1,7 @@
 import numpy as np
 from scipy.interpolate import griddata
 from .trajectory import Trajectory
-from .points import Point, Origin, Uniform
-
-
-def check_point(point, **kwargs):
-    if issubclass(type(point), (type, Point)):
-        point = point()
-    if issubclass(type(point), (Point)):
-        point = point(**kwargs)
-    point = np.array(point)
-    if point.shape[0] == 1:
-        point = np.repeat(point, **kwargs)
-    return point
+from .points import check_point
 
 def line_generator(*args, **kwargs):
     n_steps = kwargs.get('n_steps')

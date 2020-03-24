@@ -1,7 +1,10 @@
 import numpy as np, abc
-from .misc import Ignore
+from numpy import ceil, floor, round
+ROUND_STRATEGY = round
 
-
+# dummy class that is used to ignore a given argument in trajectory classes
+class Ignore(object):
+    pass
 
 class Trajectory(object):
     _callback = None
@@ -28,6 +31,10 @@ class Trajectory(object):
                 init_args[i] = args[i]
         for k, v in kwargs.items():
             init_kwargs[k] = v
+
+        assert init_kwargs.get('n_steps') is not None, "Trajectory must have an n_steps keyword (int or float)"
+        if init_kwargs.get('fs') is not None:
+            init_kwargs['n_steps'] = ROUND_STRATEGY(init_kwargs['n_steps']*init_kwargs['fs']).astype(np.int)
         return self._callback(*init_args, **init_kwargs)
 
     def __getitem__(self, idx):

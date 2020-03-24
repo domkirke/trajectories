@@ -1,7 +1,5 @@
+import numpy as np
+from .points import Point
 
-
-# dummy class that is used to ignore a given argument in trajectory classes
-class Ignore(object):
-    pass
-
-
+def scale_traj(traj, old_min, old_max, new_min, new_max):
+    return (traj - old_min)/(old_max - old_min)*(new_max-new_min)+new_min
