@@ -24,19 +24,6 @@ class Uniform_(tj.Trajectory_):
             noise = noise * 2 - 1
         return amp * noise
 
-class RandomWalk_(Uniform_):
-    def __init__(self, *args, axis=-2, **kwargs):
-        super(RandomWalk_, self).__init__(*args, **kwargs)
-        self.axis = axis
-
-    def __repr__(self):
-        return "RandomWalk_(%s, axis=%s, fixed=%s, centered=%s)"%(self.amp, self.axis, self.fixed, self.centered)
-
-    def __call__(self, *args, **kwargs):
-        out = super(RandomWalk_, self).__call__(*args, **kwargs)
-        return np.cumsum(out, axis=self.axis)
-
-
 class Normal_(tj.Trajectory_):
     def __init__(self,
                  mean: Union[float, Iterable[float]] = 0.0,
@@ -59,3 +46,14 @@ class Normal_(tj.Trajectory_):
         noise = stddev * np.random.randn(*noise_shape) + mean
         return noise
 
+class RandomWalk_(Normal_):
+    def __init__(self, *args, axis=-2, **kwargs):
+        super(RandomWalk_, self).__init__(*args, **kwargs)
+        self.axis = axis
+
+    def __repr__(self):
+        return "RandomWalk_(%s, axis=%s, fixed=%s, centered=%s)"%(self.amp, self.axis, self.fixed, self.centered)
+
+    def __call__(self, *args, **kwargs):
+        out = super(RandomWalk_, self).__call__(*args, **kwargs)
+        return np.cumsum(out, axis=self.axis)

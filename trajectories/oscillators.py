@@ -55,8 +55,8 @@ class Square_(Sawtooth_):
             p_tmp = tj.expand_as(phase[..., d], t[..., d])
             traj[..., d] = np.fmod(t[..., d] - tj.expand_as(t_offset, t[..., d])*f_tmp - p_tmp, f_tmp) / f_tmp
             # cetner
-            traj[..., d] = (traj[..., d] * 2 - 1) * tj.expand_as(amplitude[..., d], t[..., d])
             traj[..., d] = traj[..., d] > tj.expand_as(pulse_width[..., d], t[..., d])
+            traj[..., d] = (traj[..., d] * 2 - 1) * tj.expand_as(amplitude[..., d], t[..., d])
         return traj
 
 

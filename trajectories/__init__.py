@@ -13,11 +13,14 @@ from .points import *
 PointType = Union[int, float, Point, np.ndarray]
 RangeType = Tuple[PointType, PointType]
 
+from .zeros import Zero_
 from .linear import Line_, PolarLine_
 from .random import Uniform_, Normal_, RandomWalk_
 from .circular import Circle_, Helix_, Ellipse_
 from .oscillators import Sawtooth_, Square_, Sin_
 #from .circular import Circle, circle_generator, Ellipse, ellipse_generator
 #from .oscillators import *
+
+from .modifiers import TrajectoryEffect, Scramble
 
 

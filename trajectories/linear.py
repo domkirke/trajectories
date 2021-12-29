@@ -1,7 +1,7 @@
 import numpy as np, pdb
 from scipy.interpolate import interp1d, griddata
 import trajectories as traj
-from . import FS, GLOBAL_DIM, TimeRangeType, RangeType
+from . import  TimeRangeType, RangeType
 from itertools import product
 from .trajectory import Trajectory_
 from .misc import euc2sph, sph2euc

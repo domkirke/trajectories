@@ -34,7 +34,7 @@ class Trajectory_(object):
     def __and__(self, other):
         if isinstance(other, TrajectoryCompound_):
             return TrajectoryCompound_([self]+other.trajectories)
-        elif isinstance(other, Trajectory_):
+        elif isinstance(other, (Trajectory_, TrajectoryAlgebra_)):
             return TrajectoryCompound_([self] + [other])
 
 
@@ -42,6 +42,21 @@ class TrajectoryAlgebra_(object):
     def __init__(self, trajectories, weight=1.0):
         self.trajectories = checklist(trajectories)
         self.weight = checklist(weight, n=len(self.trajectories))
+
+    @property
+    def dim(self):
+        dims = [t.dim for t in self.trajectories]
+        if None in dims:
+            return None
+        else:
+            assert len(set(dims)) == 1, "dims in %s are not consistent"%self
+        return dims[0]
+
+    def __and__(self, other):
+        if isinstance(other, TrajectoryCompound_):
+            return TrajectoryCompound_([self]+other.trajectories)
+        elif isinstance(other, (Trajectory_, TrajectoryAlgebra_)):
+            return TrajectoryCompound_([self] + [other])
 
     def __repr__(self):
         repr = "("
@@ -80,6 +95,15 @@ class TrajectoryCompound_(Trajectory_):
     def __init__(self, trajectories):
         self.trajectories = checklist(trajectories)
 
+    @property
+    def dim(self):
+        dims = []
+        for t in self.trajectories:
+            dims.append(t.dim)
+        if None in dims:
+            return None
+        return sum(dims)
+
     def __repr__(self):
         repr = ""
         for i, t in enumerate(self.trajectories):
@@ -93,7 +117,7 @@ class TrajectoryCompound_(Trajectory_):
     def __and__(self, other):
         if isinstance(other, TrajectoryCompound_):
             return TrajectoryCompound_(self.trajectories + other.trajectories)
-        elif isinstance(other, Trajectory_):
+        elif isinstance(other, (Trajectory_, TrajectoryAlgebra_)):
             return TrajectoryCompound_(self.trajectories + [other])
         raise TypeError()
 
