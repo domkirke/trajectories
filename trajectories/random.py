@@ -52,7 +52,7 @@ class RandomWalk_(Normal_):
         self.axis = axis
 
     def __repr__(self):
-        return "RandomWalk_(%s, axis=%s, fixed=%s, centered=%s)"%(self.stddev, self.axis, self.fixed, self.centered)
+        return "RandomWalk_(%s, axis=%s, fixed=%s)"%(self.stddev, self.axis, self.fixed)
 
     def __call__(self, *args, **kwargs):
         out = super(RandomWalk_, self).__call__(*args, **kwargs)
