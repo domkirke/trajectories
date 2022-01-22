@@ -1,7 +1,7 @@
 import numpy as np
 from typing import Union, Tuple
 from . import TimeRangeType, RangeType, PointType
-import trajectories as tj
+import trajectories as tj, pdb
 from trajectories.linear import line_generator
 from scipy.stats import ortho_group
 from scipy.linalg import norm, inv
@@ -35,8 +35,8 @@ class Circle_(tj.Trajectory_):
             raise tj.DimException('Circle_ cannot be called with dim=1')
         # generate circle
         t = tj.expand(t, 1)
-        t_range = tj.expand(self.t_range, None, t)
-        theta_range = tj.expand(self.t_range, None, t)
+        t_range = tj.expand([self.t_range[0], self.t_range[1]], None, t)
+        theta_range = tj.expand([self.theta_range[0], self.theta_range[1]], None, t)
         angles = self.get_angles(t, t_range, theta_range)
         radius = tj.expand(self.radius, 2, t)
         circ_traj = np.concatenate([tj.expand_as(radius[..., 0], angles) * np.cos(angles),
@@ -49,7 +49,6 @@ class Circle_(tj.Trajectory_):
         origin = tj.parsepoint(self.center, dim=dim)
         circ_traj += origin
         return circ_traj
-
 
 class Helix_(tj.Trajectory_):
     def __init__(self,
