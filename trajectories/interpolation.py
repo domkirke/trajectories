@@ -1,7 +1,8 @@
 import numpy as np
 from . import TimeRangeType, RangeType, PointType
+from typing import List
 import trajectories as tj, pdb
-from scipy.interpolate import interp1d
+from scipy.interpolate import interp1d, LinearNDInterpolator
 
 class Interpolation_(tj.Trajectory_):
     def __init__(self,
@@ -25,5 +26,26 @@ class Interpolation_(tj.Trajectory_):
         interp = interp1d(t_interp, trajectory, axis=self.axis)
         trajectory = interp(t)
         return trajectory
+
+
+class Morphing_(tj.Trajectory_):
+    def __init__(self,
+                 trajectories: List[np.ndarray] = None,
+                 anchors: List[float] = None,
+                 dim: int = None):
+        assert trajectories is not None, "Morphing_ needs trajectories keyword"
+        assert anchors is not None, "Morphing_ needs anchors keyword"
+        assert len(set([t.shape[-1] for t in trajectories])) == 1, "trajectories must be of same shape"
+        self.trajectories = trajectories
+        self.anchors = anchors
+        self.dim = dim
+
+    def __call__(self, t, *args, **kwargs):
+        trajectories = tj.expand(self.trajectories, None, t)
+        interp = interp1d(self.anchors, np.concatenate([trajectories], 0), axis=0)
+        trajectory = interp(t)
+        return trajectory
+
+
 
 

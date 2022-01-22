@@ -18,7 +18,5 @@ from .linear import Line_, PolarLine_
 from .random import Uniform_, Normal_, RandomWalk_
 from .circular import Circle_, Helix_, Ellipse_
 from .oscillators import Sawtooth_, Square_, Sin_
-from .interpolation import Interpolation_
+from .interpolation import Interpolation_, Morphing_
 from .modifiers import TrajectoryEffect, Scramble
-
-
