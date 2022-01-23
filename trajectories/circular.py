@@ -116,11 +116,13 @@ class Ellipse_(tj.Trajectory_):
                  t_range: TimeRangeType = [0., 1.],
                  theta_range: RangeType = [0., 1.],
                  radius: RangeType = [1.],
+                 phase: RangeType = [0.],
                  center: PointType = [0.],
                  dim: int = None):
         self.t_range = t_range
         self.theta_range = [tj.check_param(theta_range[0]), tj.check_param(theta_range[1])]
         self.radius = np.array(radius)
+        self.phase = np.array(phase)
         self.center = tj.parsepoint(center)
         self.dim = dim
 
@@ -128,12 +130,11 @@ class Ellipse_(tj.Trajectory_):
         out_ranges = []
         for d in range(dim-1):
             if d < dim - 2:
-                to = theta_range[0][..., d] *  np.pi
-                te = theta_range[1][..., d] *  np.pi
+                to = theta_range[0][..., d] * 2 * np.pi
+                te = theta_range[1][..., d] * 2 * np.pi
             else:
                 to = theta_range[0][..., d] * 2 * np.pi
                 te = theta_range[1][..., d] * 2 * np.pi
-
             a = (te - to) / (t_range[1][..., d] - t_range[0][..., d])
             b = to - a * t_range[0][..., d]
             if tj.get_batch_shape(t) != tuple():
@@ -150,8 +151,17 @@ class Ellipse_(tj.Trajectory_):
         t = tj.expand(t, dim)
         t_range = tj.expand(self.t_range, dim, t)
         theta_range = tj.expand(self.theta_range, dim, t)
+        phase = tj.expand(self.phase, dim - 1, t)
+        if phase.shape[-1] != dim - 1:
+            raise Exception('phase shape not valid : %s, should be %s'%(phase.shape[-1], dim - 1))
         angles = self.get_angles(t, t_range, theta_range, dim=dim)
-        radius = tj.expand(self.radius, 1, t, with_phase=True)
+        angles = angles + (2 * np.pi * phase[..., np.newaxis, :])
+        radius = self.radius
+        if radius.shape < t.shape:
+            radius = radius[..., np.newaxis, :]
+        radius = tj.expand(radius, 1, t, with_phase=True)
+        if radius.shape[-2] != angles.shape[-2]:
+            radius = np.repeat(radius, angles.shape[-2], axis=-2)
         sph_coo = np.concatenate([radius, angles], axis=-1)
         euc_coo = tj.sph2euc(sph_coo)
         # embed circle
