@@ -13,5 +13,5 @@ setup(
    author_email='axelchemla@yahoo.fr',
    url="http://github.com/domkirke",
    packages=['trajectories'],
-   install_requires=['wheel', 'scipy>=1.6.2', 'numpy>=1.19.1'],
+   install_requires=['wheel', 'scipy>=1.6.2', 'numpy>=1.19.1', 'matplotlib', 'dill'],
 )
